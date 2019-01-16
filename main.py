@@ -1,21 +1,23 @@
-def parsing(input_):
-  alphabet_num = {0,1,2,3,4,5,6,7,8,9}
-  alphabet_op = {'+','*'}
-  alphabet_od = {'(',')',' '}
+from Parser import *
 
-  #Exceptions:
-    #Missing parantheses
-    #Numbers separated by space
-    #Operators followed by operators
+# get user formula to evaluate
+print("Please input the expression to be evaluated: ")
+# Take the input as a string
+input_str = input()
 
-  #How to solve the calculation:
-    #Depth Counter to solve inner most operation
-    #Recursion to solve 
-  
-  #return value or exception
+# Calling function to execute program
+try:
+    result = parsing(input_str)
+    print("We finished and the result is: ")
+    print(result)
+except InvalidCharacterError:
+    print("An invalid character was found. Aborting.")
+except InvalidNeighborError:
+    print("There are two symbols or two numbers adjacent, and we don't know what to do with them. Aborting.")
+except ParenthesesMismatchError:
+    print("Parentheses (number of opening and closing) do not match. Aborting.")
 
-#Take the input as a string
-var = input()
 
-#Calling function to execute program
-parsing(var)
+
+
+
