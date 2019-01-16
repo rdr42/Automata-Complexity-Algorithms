@@ -29,7 +29,7 @@ parsed_var = parsed_var.split(' ');
   
   #return value or exception
 
-
+# doesn't catch exception -- need to add
 class str_calc(ast.NodeVisitor):
 
     def visit_op(self, node):
@@ -45,8 +45,8 @@ class str_calc(ast.NodeVisitor):
 
     @classmethod
     def eval_expr(cls, expr):
-        tree = ast.parse(expr)
-        print (ast.dump(tree.body[0]))
+        tree = ast.parse(expr)  # parses the expression into the tree
+        print (ast.dump(tree.body[0]))  # this just prints the tree
         calculating = cls()
         return calculating.visit(tree.body[0])
 
