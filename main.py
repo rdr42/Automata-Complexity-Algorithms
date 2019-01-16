@@ -13,7 +13,8 @@ try:
 except InvalidCharacterError:
     print("An invalid character was found. Aborting.")
 except InvalidNeighborError:
-    print("There are two symbols or two numbers adjacent, and we don't know what to do with them. Aborting.")
+    print("There are two operators or two values adjacent, or an operator with no value. \n" +
+          "We don't know what to do with them. Aborting.")
 except ParenthesesMismatchError:
     print("Parentheses (number of opening and closing) do not match. Aborting.")
 

@@ -13,21 +13,65 @@ def parsing(input):
     validate_input(input)
 
     # TODO: This is for debugging.
-    print("This is our stack after debugging:")
+    print("This is our stack after tokenizing:")
     print(tokens)
 
-
-
-
-
-    # How to solve the calculation:
-    # Order of operations:
-    # () first - recursion.
-    # * second
-    # + last
+    result = evaluate(tokens, 0, -1)
 
     # return value or exception
-    return 1
+    return result
+
+
+def evaluate(expression, start_term, end_term):
+    # Evaluation strategy:
+    # Recurse on (
+    # Solve in order of ops: (, *, +
+    # replace relevant portions of the expression as we simplify
+
+    # # first pass: resolve parentheses
+    # cur_term = start_term
+    # for term in expression[:]:
+    #     if term == '(':
+    #         # find end of parenthetical portion
+    #
+    #         # recurse to subterms
+    #         # replace parenthetical with result
+    #
+    #
+    #     else:
+    #         cur_term += 1
+    #     print(expression)
+
+    # second pass: do multiplication
+    cur_term = start_term
+    for term in expression[:]:  # slice copy of expression because Python is Python
+        if term == '*':
+            # do the multiplication
+            newterm = expression[cur_term - 1] * expression[cur_term + 1]
+            # remove the terms and replace with the result
+            del expression[(cur_term - 1):(cur_term + 2)]
+            expression.insert((cur_term - 1), newterm)
+            cur_term -= 1
+        else:
+            cur_term += 1
+        print(expression)
+
+    # third pass: do addition
+    cur_term = start_term
+    for term in expression[:]:  # slice copy of expression because Python is Python
+        if term == '+':
+            # do the addition
+            newterm = expression[cur_term - 1] + expression[cur_term + 1]
+            # remove the terms and replace with the result
+            del expression[(cur_term - 1):(cur_term + 2)]
+            expression.insert((cur_term - 1), newterm)
+            cur_term -= 1
+        else:
+            cur_term += 1
+        print(expression)
+
+    # should be down to a single term now
+    return expression[0]
 
 
 def validate_input(input):
@@ -47,7 +91,8 @@ def validate_input(input):
     num_end = 0
     open_paren_count = 0
     close_paren_count = 0
-    previous_token_type = ''
+    # setting this to OP enforces that we get NUM, OP, NUM inputs
+    previous_token_type = 'OP'
     for c in input:
 
         if c in alphabet_num:
@@ -86,6 +131,10 @@ def validate_input(input):
     # we kept track, so now we can raise an exception if we have mismatched parentheses
     if open_paren_count != close_paren_count:
         raise ParenthesesMismatchError
+
+    # one last check that we don't have a trailing operator with no value
+    if previous_token_type == 'OP':
+        raise InvalidNeighborError
 
     # Exceptions:
     # Missing parantheses
