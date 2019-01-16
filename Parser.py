@@ -16,34 +16,48 @@ def parsing(input):
     print("This is our stack after tokenizing:")
     print(tokens)
 
-    result = evaluate(tokens, 0, -1)
+    result = evaluate(tokens)
 
     # return value or exception
     return result
 
 
-def evaluate(expression, start_term, end_term):
+def evaluate(expression):
     # Evaluation strategy:
     # Recurse on (
     # Solve in order of ops: (, *, +
     # replace relevant portions of the expression as we simplify
 
-    # # first pass: resolve parentheses
-    # cur_term = start_term
-    # for term in expression[:]:
-    #     if term == '(':
-    #         # find end of parenthetical portion
-    #
-    #         # recurse to subterms
-    #         # replace parenthetical with result
-    #
-    #
-    #     else:
-    #         cur_term += 1
-    #     print(expression)
+    # first pass: resolve parentheses
+    cur_term = 0
+    start_paren = -1
+    end_paren = -1
+    paren_depth = 0
+    for term in expression[:]:
+        if term == '(':
+            if paren_depth == 0:
+                start_paren = cur_term
+            paren_depth += 1
+        elif term == ')':
+            # try to find end of parenthetical portion
+            # if we find a ')' at depth = 1 then we've closed our parentheses
+            if paren_depth == 1:
+                end_paren = cur_term
+                # recursion!
+                newterm = evaluate(expression[(start_paren + 1):end_paren])
+                del expression[start_paren:(end_paren + 1)]
+                expression.insert(start_paren, newterm)
+                cur_term -= (end_paren - start_paren)
+            paren_depth -= 1
+
+            # recurse to subterms
+            # replace parenthetical with result
+
+        cur_term += 1
+    print(expression)
 
     # second pass: do multiplication
-    cur_term = start_term
+    cur_term = 0
     for term in expression[:]:  # slice copy of expression because Python is Python
         if term == '*':
             # do the multiplication
@@ -57,7 +71,7 @@ def evaluate(expression, start_term, end_term):
         print(expression)
 
     # third pass: do addition
-    cur_term = start_term
+    cur_term = 0
     for term in expression[:]:  # slice copy of expression because Python is Python
         if term == '+':
             # do the addition
